@@ -1,0 +1,39 @@
+<!-- Embed the layout.ejs file -->
+<% layout( 'layout' ) -%>
+
+
+<script>
+    // Attach a submit handler to the form
+$(document).ready(function() {
+	
+	$('button#login').click( function() {
+    	$.post( '/validate', $('form#loginForm').serialize(),
+    	function(data) {
+    
+       },
+       'json' // I expect a JSON response
+       );
+	});
+	
+});
+
+  
+</script>
+
+  <div id="content" style="width: 1000px; height:600px">
+  <form action="http://localhost:8088/validate" id="loginForm">
+  		<label>Enter your username</label>
+        <p><input type="text" name="username" placeholder="Username"></p>
+        <label>Enter your password</label>
+        <p><input type="password" name="password" placeholder="Password"></p>
+   </form>
+   <p><button id="login">Login</button></p>
+  </div>
+  
+  <div>
+  Armen Vardanyan vaarmen
+  </div>
+  
+  
+
+

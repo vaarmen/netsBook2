@@ -1,0 +1,62 @@
+<!-- Embed the layout.ejs file -->
+<% layout( 'layout' ) -%>
+
+
+<!-- This is some very simple jQuery functionality to
+     give a hint of how it works.
+     
+     In general, $(object) will attach an event to a DOM
+     object of the appropriate type or ID.
+     
+     The document is itself an object.  Similarly you
+     can pick a tag, like a p or button tag, and fetch it:
+     see the button event handler below.
+     
+     Finally, you can pick a node with an ID attribute,
+     by its ID, using the #tag syntax.  See the visibility
+     change for the "text" span below.
+     
+     See
+     http://www.w3schools.com/jquery/jquery_examples.asp
+     --> 
+
+<script>
+    var visible = true;
+	// This function is called by jQuery on load / render
+	// of the document.  It can be used to initialize code
+  $(document).ready(function() {
+  	
+  	// Example:  Define a handler that toggles
+  	$("button#toggle").click(function() {
+  		if (visible)
+  			$("#test").hide();
+  		else
+  			$("#test").show();
+  		visible = !visible;
+  	});
+  	
+  	// Upon click of the AJAX request...
+  	$("#ajax").click(function() {
+  		// Fetch some data from the server via an AJAX
+  		// call.  Note that the parameter should presumably
+  		// be set via an HTML form field.
+  		$.get("/getdata?test=123", function(data, status) {
+  		
+  		// When we get back the data, put it into
+  		// the data <span>
+  			$("#data").append(data);
+  		});
+  	});
+  });
+  
+</script>
+
+  <div id="content" style="width: 1000px; height:600px">
+  <button id="toggle">I'm a button</button>
+  <span id="test">This should become visible and invisible</span>
+  <button id="ajax">AJAX request</button>
+  <span id="data"></span>
+
+    </div>
+
+

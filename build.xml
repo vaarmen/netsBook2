@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="nets212-hw5" basedir="." default="usage">
+	<property name="src.dir" value="."/>
+
+	<target name="usage">
+		<echo message=""/>
+		<echo message="${name} build file"/>
+		<echo message="-----------------------------------"/>
+		<echo message=""/>
+		<echo message="Available targets are:"/>
+		<echo message=""/>
+		<echo message="build     --> Zip source code up"/>
+	</target>
+
+	<target name="build" description="build the source zip">
+		<zip destfile="hw5.zip"
+		       basedir="${src.dir}" 
+			includes="*.js,routes/*.js,views/*.ejs"
+			excludes="node_modules/*"/>
+	</target>	
+</project>
