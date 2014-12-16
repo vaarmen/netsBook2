@@ -83,11 +83,18 @@ exports.signup = function(req, res) {
 	res.render('signup', { title: 'This is an example page Armen' });
 }
 
-exports.home = function(req, res) {
+exports.home = function(req,res){
 	
-	// Trigger index.ejs.  Change the name to trigger a different page.
+	if (!req.session.loggedIn) {
+		res.redirect("/")
+		return
+	}
 	
-	res.render('home', { title: 'This is an example page Armen' });
+	res.render('home', { title: 'home', 
+		userid: req.session.userid,
+		username: req.session.username, 
+		
+	});
 }
 
 exports.validate = function(req, res) {
@@ -118,13 +125,15 @@ exports.validate = function(req, res) {
 				if(password === data.password){
 					//TODO remember staff in session cookies
 					
+					req.session.username = username
+					req.session.userid = data.userid
+					req.session.fullname = data.fullname
+					req.session.loggedIn = true
+
+					
 					res.send({"username": username, "errorMessage" : "", "success" : true})
 					console.log("Success")
-						
-						
-						
-						
-					
+										
 				}
 				else{
 					res.send({"username": username, "errorMessage" : "Wrong Password",
@@ -141,10 +150,20 @@ exports.validate = function(req, res) {
 			console.log("Finish sending")
 		}
 	})
-	
-	
-	
-	
 	//res.render('home', { title: 'This is an example page Armen' });
+}
+
+exports.home = function(req,res){
+	
+	if (!req.session.loggedIn) {
+		res.redirect("/")
+		return
+	}
+	
+	res.render('home', { title: 'home', 
+		userid: req.session.userid,
+		username: req.session.username, 
+		
+	});
 }
 

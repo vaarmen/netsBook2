@@ -1,0 +1,29 @@
+<!-- Embed the layout.ejs file -->
+<% layout( 'layout' ) -%>
+
+
+<script>
+    // Attach a submit handler to the form
+$(document).ready(function() {
+		
+}
+  
+</script>
+
+  <form action="/createAccount" method="post">
+<fieldset>
+    <legend>Personal Info</legend>
+    <table cellpadding="3">
+      <tr><td width="150px"><strong>Username</strong></td><td><input type="text" name="username"></td></tr>
+      <tr><td><strong>Password</strong></td><td><input type="password" name="password"></td></tr>
+      <tr><td><strong>Full Name</strong></td><td><input type="text" name="fullname"></td></tr>
+    </table>
+</fieldset>
+    
+    <input type="submit" value="Signup">
+
+  
+  <div>
+  Armen Vardanyan vaarmen
+  </div>
+  

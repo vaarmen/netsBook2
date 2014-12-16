@@ -37,7 +37,7 @@ friends.init(function() {
 		userids.init(function() {
 			
 			routes.init(friends, users, userids, function() {
-				app.get( '/', routes.index );
+				app.get( '/', routes.login );
 				app.get( '/index.html', routes.index );
 				app.get( '/getdata', routes.getData );
 				
