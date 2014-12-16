@@ -5,12 +5,32 @@
 <script>
     // Attach a submit handler to the form
 $(document).ready(function() {
+	
+	$('button#submit').click( function() {
+    	$.post( '/createAccount', $('form#signupForm').serialize(),
+    	function(data) {
+    		console.log("Here1")
+    		
+    		console.log(data)
+    		if(data.success){
+    			window.location.replace("/home")
+    		}
+    		else{
+    			console.log("Here2")
+    			console.log(data.errorMessage)
+    			$("#error").text(data.errorMessage)
+    		}
+    
+       },
+       'json' // I expect a JSON response
+       );
+	});
 		
-}
+});
   
 </script>
 
-  <form action="/createAccount" method="post">
+  <form action="/createAccount" method="post" id="signupForm">
 <fieldset>
     <legend>Personal Info</legend>
     <table cellpadding="3">
@@ -19,8 +39,11 @@ $(document).ready(function() {
       <tr><td><strong>Full Name</strong></td><td><input type="text" name="fullname"></td></tr>
     </table>
 </fieldset>
-    
-    <input type="submit" value="Signup">
+</form>
+<p><button id="submit">Submit</button></p>
+<div style="color: red" id="error"></div>
+
+
 
   
   <div>

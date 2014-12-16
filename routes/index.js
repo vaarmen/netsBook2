@@ -83,20 +83,6 @@ exports.signup = function(req, res) {
 	res.render('signup', { title: 'This is an example page Armen' });
 }
 
-exports.home = function(req,res){
-	
-	if (!req.session.loggedIn) {
-		res.redirect("/")
-		return
-	}
-	
-	res.render('home', { title: 'home', 
-		userid: req.session.userid,
-		username: req.session.username, 
-		
-	});
-}
-
 exports.validate = function(req, res) {
 	
 	// Trigger index.ejs.  Change the name to trigger a different page.
@@ -163,6 +149,66 @@ exports.home = function(req,res){
 	res.render('home', { title: 'home', 
 		userid: req.session.userid,
 		username: req.session.username, 
+		
+	});
+}
+
+exports.createAccount = function(req,res){
+	
+	console.log("Signup Form SUbmitted !")
+	
+	
+	var username  = req.body.username
+	var password  = req.body.password
+	var fullname  = req.body.fullname
+	
+	var json =
+	{
+		username: username,
+		password: password,
+		fullname:fullname
+	}
+	
+	console.log(json)
+	
+	if(username === "" || password === "" || fullname === ""){
+		res.send({"errorMessage" : "Please fill out all the fields !",
+			"success" : false} );
+		return
+	}
+	
+	users.exists(username, function(err,data){
+		if(err){
+			console.log("Error in create Account")
+		}
+		
+		if(data){
+			res.send({"errorMessage" : "Username is already being used !",
+				"success" : false} )	
+		}
+		else{
+			json.userid = userids.inx
+			
+			userids.put(json.userid.toString(), username, function(err, data) {
+				if (err) {
+					console.log("Error in adding a userid!")
+				}
+			});
+			
+			users.put(username, JSON.stringify(json), function(err, data) {
+				if (err) {
+					console.log("Error in adding a user !")
+				}
+			});
+			
+			
+			req.session.loggedIn = true
+			req.session.username = username
+			req.session.userid = json.userid
+			req.session.fullname = fullname
+			res.send({"errorMessage" : "", "success": true })
+			
+		}
 		
 	});
 }
