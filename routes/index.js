@@ -114,15 +114,31 @@ exports.validate = function(req, res) {
 					console.log("Error in validate 2")
 					return 
 				}
+				var data = JSON.parse(data) 
+				if(password === data.password){
+					//TODO remember staff in session cookies
+					
+					res.send({"username": username, "errorMessage" : "", "success" : true})
+					console.log("Success")
+						
+						
+						
+						
+					
+				}
+				else{
+					res.send({"username": username, "errorMessage" : "Wrong Password",
+						"success" : false} )
+				}
 				
-				console.log(data)
 			})
 			
 		}
 		else{
-			res.send({"username": username, "errorMessgae" : "Wrong Username",
+			console.log("Start sending")
+			res.send({"username": username, "errorMessage" : "Wrong Username",
 				"success" : false} )
-			
+			console.log("Finish sending")
 		}
 	})
 	

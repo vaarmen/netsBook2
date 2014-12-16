@@ -9,6 +9,15 @@ $(document).ready(function() {
 	$('button#login').click( function() {
     	$.post( '/validate', $('form#loginForm').serialize(),
     	function(data) {
+    		console.log("Here1")
+    		if(data.success){
+    			window.location.replace("/home")
+    		}
+    		else{
+    			console.log("Here2")
+    			console.log(data.errorMessage)
+    			$("#error").text(data.errorMessage)
+    		}
     
        },
        'json' // I expect a JSON response
@@ -21,14 +30,19 @@ $(document).ready(function() {
 </script>
 
   <div id="content" style="width: 1000px; height:600px">
-  <form action="http://localhost:8088/validate" id="loginForm">
+  <form action="/validate" id="loginForm">
   		<label>Enter your username</label>
         <p><input type="text" name="username" placeholder="Username"></p>
         <label>Enter your password</label>
         <p><input type="password" name="password" placeholder="Password"></p>
    </form>
    <p><button id="login">Login</button></p>
+   <div style="color: red" id="error"></div>
+  	<div id="signup">
+  	<a href="/signup">Sign Up</a>
+  	</div>
   </div>
+  
   
   <div>
   Armen Vardanyan vaarmen
