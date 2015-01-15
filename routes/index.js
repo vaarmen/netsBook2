@@ -160,18 +160,22 @@ exports.createAccount = function(req,res){
 	
 	var username  = req.body.username
 	var password  = req.body.password
-	var fullname  = req.body.fullname
+	var firstname  = req.body.firstname
+	var lastname = req.body.lastname
+	var email = req.body.email
 	
 	var json =
 	{
 		username: username,
 		password: password,
-		fullname:fullname
+		firstname: firstname,
+		lastname: lastname,
+		email: email
 	}
 	
 	console.log(json)
 	
-	if(username === "" || password === "" || fullname === ""){
+	if(username === "" || password === "" || firstname === "" || lastname === "" || email ===""){
 		res.send({"errorMessage" : "Please fill out all the fields !",
 			"success" : false} );
 		return
@@ -205,7 +209,6 @@ exports.createAccount = function(req,res){
 			req.session.loggedIn = true
 			req.session.username = username
 			req.session.userid = json.userid
-			req.session.fullname = fullname
 			res.send({"errorMessage" : "", "success": true })
 			
 		}

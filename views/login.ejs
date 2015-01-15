@@ -3,51 +3,139 @@
 
 
 <script>
-    // Attach a submit handler to the form
+		// Attach a submit handler to the form
 $(document).ready(function() {
 	
 	$('button#login').click( function() {
-    	$.post( '/validate', $('form#loginForm').serialize(),
-    	function(data) {
-    		console.log("Here1")
-    		if(data.success){
-    			window.location.replace("/home")
-    		}
-    		else{
-    			console.log("Here2")
-    			console.log(data.errorMessage)
-    			$("#error").text(data.errorMessage)
-    		}
-    
-       },
-       'json' // I expect a JSON response
-       );
+			$.post( '/validate', $('form#loginForm').serialize(),
+			function(data) {
+				console.log("Here1")
+				if(data.success){
+					window.location.replace("/home")
+				}
+				else{
+					console.log("Here2")
+					console.log(data.errorMessage)
+					$("#error").text(data.errorMessage)
+				}
+		
+			 },
+			 'json' // I expect a JSON response
+			 );
+	});
+
+
+	$('#btn-login').click( function() {
+			console.log("Here0")
+			$.post( '/validate', $('form#loginform').serialize(),
+			function(data) {
+				console.log("Here1")
+				if(data.success){
+					window.location.replace("/home")
+				}
+				else{
+					console.log("Here2")
+					console.log(data.errorMessage)
+
+					$('#loginalert').show();
+					$("#loginalert").text(data.errorMessage)
+				}
+		
+			 },
+			 'json' // I expect a JSON response
+			 );
 	});
 	
 });
 
-  
+	
 </script>
 
-  <div id="content" style="width: 1000px; height:600px">
-  <form action="/validate" id="loginForm">
-  		<label>Enter your username</label>
-        <p><input type="text" name="username" placeholder="Username"></p>
-        <label>Enter your password</label>
-        <p><input type="password" name="password" placeholder="Password"></p>
-   </form>
-   <p><button id="login">Login</button></p>
-   <div style="color: red" id="error"></div>
-  	<div id="signup">
-  	<a href="/signup">Sign Up</a>
-  	</div>
-  </div>
-  
-  
-  <div>
-  Armen Vardanyan vaarmen
-  </div>
-  
-  
+	<!--
+	<div id="content" style="width: 1000px; height:600px">
+	<form action="/validate" id="loginForm">
+			<label>Enter your username</label>
+				<p><input type="text" name="username" placeholder="Username"></p>
+				<label>Enter your password</label>
+				<p><input type="password" name="password" placeholder="Password"></p>
+	 </form>
+	 <p><button id="login">Login</button></p>
+	 <div style="color: red" id="error"></div>
+		<div id="signup">
+		<a href="/signup">Sign Up</a>
+		</div>
+	</div>
+	-->
+
+
+
+<div class="container">
+	<div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
+						<div class="panel panel-info" >
+										<div class="panel-heading">
+												<div class="panel-title">Sign In</div>
+												<div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>
+										</div>     
+
+										<div style="padding-top:30px" class="panel-body" >
+
+												<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+														
+												<form id="loginform" class="form-horizontal" role="form">
+														
+														<div id="loginalert" style="display:none" class="alert alert-danger">
+                                    <p>Error:</p>
+                                    <span></span>
+                                </div>
+
+														<div style="margin-bottom: 25px" class="input-group">
+																				<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+																				<input id="login-username" type="text" class="form-control" name="username" value="" placeholder="username">                                        
+																		</div>
+																
+														<div style="margin-bottom: 25px" class="input-group">
+																				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+																				<input id="login-password" type="password" class="form-control" name="password" placeholder="password">
+																		</div>
+																		
+
+																
+														
+
+
+																<div style="margin-top:10px" class="form-group">
+																		<!-- Button -->
+
+																		<div class="col-sm-12 controls">
+																			<a id="btn-login" class="btn btn-success">Login  </a>
+																		</div>
+																</div>
+
+
+																<div class="form-group">
+																		<div class="col-md-12 control">
+																				<div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
+																						Don't have an account! 
+																				<a href="/signup" >
+																						Sign Up Here
+																				</a>
+																				</div>
+																		</div>
+																</div>    
+														</form>     
+
+
+
+												</div>                     
+										</div>  
+				</div>
+			</div>
+	
+	
+	<div>
+	Armen Vardanyan vaarmen
+	</div>
+	
+	
 
 

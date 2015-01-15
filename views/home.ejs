@@ -1,0 +1,41 @@
+<!-- Embed the layout.ejs file -->
+<% layout( 'layout' ) -%>
+
+<script>
+	$(document).ready(function() {
+		console.log("one");
+		console.log("<%= username %>");
+
+		username = "<%= username %>";
+
+		$.get( "test.cgi", { name: "John", time: "2pm" } )
+		  .done(function( data ) {
+			alert( "Data Loaded: " + data );
+		  });
+
+
+	});
+</script>
+
+
+<div class="row">
+	<div class="col-md-6">
+		<div class="panel panel-info">
+		  <!-- Default panel contents -->
+		  <div class="panel-heading">Friend List</div>
+		  <div class="panel-body">
+			<p>...</p>
+		  </div>
+
+		  <!-- List group -->
+		  <ul class="list-group">
+			<li class="list-group-item">Cras justo odio</li>
+			<li class="list-group-item">Dapibus ac facilisis in</li>
+			<li class="list-group-item">Morbi leo risus</li>
+			<li class="list-group-item">Porta ac consectetur ac</li>
+			<li class="list-group-item">Vestibulum at eros</li>
+		  </ul>
+		</div>
+	</div>
+
+</div>
