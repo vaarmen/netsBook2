@@ -21,7 +21,10 @@
 		"cookie-parser": "*",
 		"express-session": "*",
 		"aws-sdk": "*",
-		"lru-cache": "2.5.x"
+		"lru-cache": "2.5.x",
+		"underscore": "*",
+		"async": "*",
+		"crypto": "*"
 	},
   "author": "",
   "license": "MIT",

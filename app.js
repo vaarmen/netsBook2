@@ -47,8 +47,12 @@ friends.init(function() {
 				app.get( '/signup', routes.signup );
 				app.get( '/home', routes.home );
 				
+				
 				app.post( '/validate', routes.validate);
 				app.post( '/createAccount', routes.createAccount);
+				
+				
+				app.get('/userWall', routes.userWall);
 				
 				
 			

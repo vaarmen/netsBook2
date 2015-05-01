@@ -2,6 +2,9 @@
  * Main Web route handling
  */
 
+var _ = require('underscore');
+var async = require('async');
+
 // Note the use of the exports object.  Each function that we
 // assign to exports.XXX is callable by outside modules,
 // and we can "hook" to it via routes.XXX.
@@ -11,6 +14,92 @@
 var users;
 var friends;
 var userids;
+
+//Checks if user1 and user2 are friends 
+var areFriends = function(user1, user2, callback) {
+	if(!user1 || !user2) {
+		console.log('areFriednds supplied with non valid usernames');
+		return;
+	}
+	//console.log(user1);
+	var data1 = {};
+	var data2 = {};
+	async.map([user1,user2],
+			function(user,callback) {
+				//console.log(user);
+				users.get(user, function(err,data) {
+					if(err) {
+						console.log('cannot access user');
+						callback(err);
+					} else {
+						//console.log(data);
+						callback(null,JSON.parse(data));
+					
+					}
+				});
+			},
+			function(err,results) {
+				if(err) {
+					console.log(err);
+				} else {
+					console.log('hello');
+					data1 = results[0];
+					data2 = results[1];
+					console.log(data1);
+					console.log(data2);
+					id1 = data1.userid;
+					//console.log(id1);
+					id2 = data2.userid;
+					//console.log(id2);
+	
+					friends.getSet(id1.toString(), function (err,data) {
+						if(err) {
+							console.log('Error in accessing friends when checking friendship');
+							return;
+						} else {
+							//var data2 = JSON.parse(data);
+							console.log(data);
+							var data2 = JSON.parse(data);
+							console.log(data2);
+							if(_.contains(data2,id2)) {
+								callback(null, true);
+							} else {
+								callback(null,false);
+							}
+							
+							
+						}
+						
+					});
+
+
+					
+				}
+			});
+	// users.get(user1, function(err,data) {
+	// 	if(err) {
+	// 		console.log('cannot access user');
+	// 	} else {
+	// 		console.log(data);
+	// 		data1 = data;
+	// 		//console.log(user1);
+	// 	}
+	// });
+	
+	// users.get(user2, function(err,data) {
+	// 	if(err) {
+	// 		console.log('cannot access user');
+	// 	} else {
+	// 		console.log(data);
+	// 		data2 = data;
+	// 		//console.log(user2);
+	// 	}
+	// });
+	
+	// console.log(data1);
+	// console.log(data2);
+	
+}
 
 // We export the init() function to initialize
 // our KVS values
@@ -51,12 +140,29 @@ exports.getData = function(req, res) {
 		else {
 			// Update the session object to remember we've
 			// requested data
-			req.session.loadedData = true;
+			//req.session.loadedData = true;
 			
 			// Actually output the data
-			res.send(values);
+			//res.send(values);
 		}
 	});
+	
+	areFriends('sample3','sample4', function(err, data) {
+		if (err) {
+			console.log(err);
+		} else {
+			console.log(data);
+		}
+	});
+	
+	areFriends('sample3','user10', function(err, data) {
+		if (err) {
+			console.log(err);
+		} else {
+			console.log(data);
+		}
+	});
+	
 }
 
 /**
@@ -137,7 +243,7 @@ exports.validate = function(req, res) {
 		}
 	})
 	//res.render('home', { title: 'This is an example page Armen' });
-}
+};
 
 exports.home = function(req,res){
 	
@@ -184,9 +290,7 @@ exports.createAccount = function(req,res){
 	users.exists(username, function(err,data){
 		if(err){
 			console.log("Error in create Account")
-		}
-		
-		if(data){
+		} else if(data){
 			res.send({"errorMessage" : "Username is already being used !",
 				"success" : false} )	
 		}
@@ -214,5 +318,57 @@ exports.createAccount = function(req,res){
 		}
 		
 	});
+}
+
+exports.userWall = function (req,res) {
+	var username = req.session.username;
+	if(!username) {
+		res.status(401).send('Log in before the request');
+	} else {
+		
+		var reqUser = req.query.user;
+		
+		if(!reqUser) {
+			res.status(400).send('No username supplied for the wall page');
+		} else {
+			
+			users.get(reqUser, function(err, data){
+				if(err) {
+					console.log(err);
+					res.status(500).send('error while accessing user');
+				} else {
+					var reqUserData = JSON.parse(data);
+					
+					userWall.getSet(reqUser, function(err,data) {
+						if(err) {
+							console.log(err);
+							res.status(500).send('error while accessing user wall posts');
+						} else {
+							var posts = _.map(data, function(post) {
+								return JSON.parse(post);
+							});
+							
+							posts = _.sortBy(posts,'time');
+							posts = posts.reverse();
+							
+							var areFriends = reqUserData;
+							var locals = {
+									user: reqUserData,
+									posts: posts,
+							};
+						}
+						
+						
+					});
+					
+				}
+				
+			});
+			
+		}
+	}
+	
+	
+
 }
 
