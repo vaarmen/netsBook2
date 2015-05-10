@@ -1,0 +1,24 @@
+<div class="feed-box well well-lg">
+	<% if (posts && posts.length > 0) { %>
+		<ul>
+			<% for (var i = 0; i < posts.length; i++) { %>
+				<% var post = posts[i] %>
+				<div class="panel panel-default">
+				  
+				  <div class="panel-body">
+				    <p><a href="/userWall?user=<%= post.user %>">
+				    	<%= post.user %></a> <%= post.post %><br>
+				    	<% var d = new Date(+post.time);var s = d.toLocaleDateString(); %><%= d %>
+				    </p>
+				  </div>
+				  
+				  
+				</div>
+			<% }; %>
+		</ul>
+		<% } 
+		
+		else { %>
+			<p>No posts found</p>
+		<% } %>
+</div>

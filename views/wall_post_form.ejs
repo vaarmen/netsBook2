@@ -1,0 +1,35 @@
+<script>
+	// This function is called by jQuery on load / render
+	// of the document.  It can be used to initialize code
+  $(document).ready(function() {
+  	$("#post-submit").click(function() {
+  		//post status update
+  		console.log("posting")
+  		var text = $("#post-input").val();
+  		var postData = {
+  			post: text,
+  			to: "<%=user.username%>"
+  		};
+  		console.log(JSON.stringify(postData));
+  		$.post("/makeWallPost", postData, function(data, status) {
+  			console.log("/makeWallPost returning");
+  			window.location.reload();
+  			window.location.href = window.location.protocol + '//' + window.location.host + '/userWall?user=' + '<%=user.username%>';
+  		})
+  		.fail( function(xhr, textStatus, errorThrown) {
+        	errorResp = xhr.responseText;
+        	alert(errorResp);
+  		});
+  	});
+  });
+</script>
+
+<div class="post-box well well-lg">
+	<div class="input-group input-group-lg">
+	  <span class="input-group-addon">Post on the wall of <%=user.username%></span>
+	  <input id="post-input" type="text" class="form-control" placeholder="Wall Post">
+	  	<span class="input-group-btn">
+	        <button id="post-submit" class="btn btn-default" type="button">Post</button>
+	  </span>
+	</div>
+</div>

@@ -31,36 +31,40 @@ var aws = require("./keyvaluestore.js");
 var friends = new aws('friends');
 var users = new aws('users');
 var userids = new aws('userids');
+var userWall = new aws('userWall');
 
 friends.init(function() {
 	users.init(function() {
 		userids.init(function() {
+			userWall.init(function() {
 			
-			routes.init(friends, users, userids, function() {
-				app.get( '/', routes.login );
-				app.get( '/index.html', routes.index );
-				app.get( '/getdata', routes.getData );
+				routes.init(friends, users, userids, userWall, function() {
+					app.get( '/', routes.login );
+					app.get( '/index.html', routes.index );
+					app.get( '/getdata', routes.getData );
+					
+					app.get( '/mypath', routes.myfn );
+					
+					app.get( '/login', routes.login );
+					app.get( '/signup', routes.signup );
+					app.get( '/home', routes.home );
+					
+					
+					app.post( '/validate', routes.validate);
+					app.post( '/createAccount', routes.createAccount);
+					
+					
+					app.get('/userWall', routes.userWall);
+					app.post('/makeWallPost', routes.makeWallPost);
+					
+					
 				
-				app.get( '/mypath', routes.myfn );
-				
-				app.get( '/login', routes.login );
-				app.get( '/signup', routes.signup );
-				app.get( '/home', routes.home );
-				
-				
-				app.post( '/validate', routes.validate);
-				app.post( '/createAccount', routes.createAccount);
-				
-				
-				app.get('/userWall', routes.userWall);
-				
-				
-			
-				/////////////////////
-				
-				http.createServer( app ).listen( app.get( 'port' ), function(){
-					  console.log( 'Open browser to http://localhost:' + app.get( 'port' ));
-					} );
+					/////////////////////
+					
+					http.createServer( app ).listen( app.get( 'port' ), function(){
+						  console.log( 'Open browser to http://localhost:' + app.get( 'port' ));
+						} );
+				});
 			});
 		});
 	});

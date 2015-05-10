@@ -1,0 +1,61 @@
+<!-- Embed the inner_layout.ejs file -->
+<% layout( 'layout' ) -%>
+
+<script>
+
+  $(document).ready(function() {
+  $("#add-friend").click(function() {
+  		var friend = "<%=user.username%>";
+  		var postData = {friend: friend};
+  		$.post("/addFriend", postData, function(data, status) {
+  			window.location.href = window.location.href;
+  		})
+  		.fail( function(xhr, textStatus, errorThrown) {
+        	errorResp = xhr.responseText;
+        	alert(errorResp);
+  		});
+  	});
+  });
+</script>
+
+<div class="row">
+      <div class="col-lg-9">
+      
+		      <% if (own) { %>
+		      
+					<h1> Your Wall </h1>
+				
+			  <% }  else {%>
+			  
+			  		<div class="feedHeader" style="width: 50%; margin: 0 auto">
+					    <h1> Wall of <%=user.username%> </h1>
+					    	<br/>
+					    	<% if (!areFriends) { %>
+						    	<button id="add-friend" type="button" class="btn btn-default btn-lg">
+								  	<span id="icon-button" class="glyphicon glyphicon-plus" aria-hidden="true"></span> Friend <%=user.username%>
+								</button>
+							<% } %>
+							
+					</div>
+					
+					<br/>
+					<hr>
+					
+						<!-- status_update form only shown under someone else's wall -->
+		      			<% include wall_post_form %>
+			  <% } %>
+      		
+      		
+      		
+      		
+      		<!-- embed the feed -->
+      			<% include feed%>
+      		
+
+      </div>
+      <div class="col-lg-3">
+      		<h1> Your Friends </h1>
+			
+      </div>
+</div>
+

@@ -14,6 +14,7 @@ var async = require('async');
 var users;
 var friends;
 var userids;
+var userWall;
 
 //Checks if user1 and user2 are friends 
 var areFriends = function(user1, user2, callback) {
@@ -47,10 +48,10 @@ var areFriends = function(user1, user2, callback) {
 					data2 = results[1];
 					console.log(data1);
 					console.log(data2);
-					id1 = data1.userid;
+					var id1 = data1.userid;
 					//console.log(id1);
-					id2 = data2.userid;
-					//console.log(id2);
+					var id2 = data2.userid;
+					console.log("id2 - 1 " + id2);
 	
 					friends.getSet(id1.toString(), function (err,data) {
 						if(err) {
@@ -59,9 +60,11 @@ var areFriends = function(user1, user2, callback) {
 						} else {
 							//var data2 = JSON.parse(data);
 							console.log(data);
-							var data2 = JSON.parse(data);
-							console.log(data2);
-							if(_.contains(data2,id2)) {
+							
+							console.log("id2 - 2 " + id2.toString());
+							console.log(user1 + user2);
+							//var data2 = JSON.parse(data);
+							if(_.contains(data,id2.toString())) {
 								callback(null, true);
 							} else {
 								callback(null,false);
@@ -76,37 +79,68 @@ var areFriends = function(user1, user2, callback) {
 					
 				}
 			});
-	// users.get(user1, function(err,data) {
-	// 	if(err) {
-	// 		console.log('cannot access user');
-	// 	} else {
-	// 		console.log(data);
-	// 		data1 = data;
-	// 		//console.log(user1);
-	// 	}
-	// });
+};
+
+var friendsOfUser = function (username, callback) {
+	if(!username) {
+		callback("username nonexistent in friendsOfUser", null);
+	}
 	
-	// users.get(user2, function(err,data) {
-	// 	if(err) {
-	// 		console.log('cannot access user');
-	// 	} else {
-	// 		console.log(data);
-	// 		data2 = data;
-	// 		//console.log(user2);
-	// 	}
-	// });
-	
-	// console.log(data1);
-	// console.log(data2);
-	
-}
+	users.get(username, function(err,data) {
+		if(err) {
+			console.log('Error in home 1')
+			console.log(err);
+			callback(err);
+		} else {
+			data = JSON.parse(data);
+			var id = data.userid;
+			
+			friends.getSet(id.toString(), function(err,data) {
+				if(err) {
+					console.log('Error in home 2')
+					
+					console.log(err);
+					callback(err);
+				} else {
+					async.map(data, 
+						function(id,callback2) {
+							userids.get(id, function(err,data) {
+								if (err) {
+									console.log(err);
+									callback2(err);
+								} else {
+									callback2(null,data);
+								}
+
+
+							})
+						},
+						function(err, results) {
+							if(err) {
+								callback(err);
+							} else {
+								callback(null, results);
+							}
+						})
+					
+				}
+			});
+		}
+	} );
+
+};
+
+
+
+
 
 // We export the init() function to initialize
 // our KVS values
-exports.init = function(fr,usrs,uids,callback) {
+exports.init = function(fr,usrs,uids, usrwl, callback) {
 	users = usrs;
 	userids = uids;
 	friends = fr;
+	userWall = usrwl;
 	
 	
 	callback();
@@ -133,7 +167,13 @@ exports.getData = function(req, res) {
 	//       or discard this function
 	
 	// Dummy response:  Consult the KVS and
-	// get the list of keys (users who have friends)
+	// get the list of keys (users who have friend
+	
+	async.series([
+	              function(callback) {
+	              	console.log("one callback");
+	            	  
+	      
 	friends.scanKeys(function(err,values) {
 		if (err)
 			throw err;
@@ -143,27 +183,57 @@ exports.getData = function(req, res) {
 			//req.session.loadedData = true;
 			
 			// Actually output the data
-			//res.send(values);
+			res.send(values);
 		}
 	});
+	callback(null,"one");
+	
+	              },
+	              function(callback) {
+	              	console.log("two callback");
+	              
+	
+	
 	
 	areFriends('sample3','sample4', function(err, data) {
 		if (err) {
 			console.log(err);
 		} else {
 			console.log(data);
+			
 		}
+		callback(null,"two");
 	});
+	
+	              },
+	              function(callback) {
+	              	console.log("three callback");
+	            	  
+	          
 	
 	areFriends('sample3','user10', function(err, data) {
 		if (err) {
 			console.log(err);
 		} else {
 			console.log(data);
+			
 		}
+		callback(null,"three");
 	});
 	
+	              }
+	              ],
+	              function(err,results) {
+	              	if(err) {
+	              		console.log('Error in getData');
+	              	} else {
+
+						console.log(results);
+					}
+	}
+	);
 }
+	
 
 /**
  * Example of another function handled by the route
@@ -252,11 +322,33 @@ exports.home = function(req,res){
 		return
 	}
 	
-	res.render('home', { title: 'home', 
-		userid: req.session.userid,
-		username: req.session.username, 
-		
+	var username = req.session.username;
+	if(!username) {
+		res.status(401).send('Log in before the request');
+	}
+	
+	friendsOfUser(username, function(err,data) {
+
+		if(err) {
+			console.log('Error in home 2')
+			
+			console.log(err);
+		} else {
+			res.render('home', { title: 'home', 
+				userid: req.session.userid,
+				username: req.session.username, 
+				friends: data
+				
+			});
+			
+		}
 	});
+
+	
+	
+	
+	
+	
 }
 
 exports.createAccount = function(req,res){
@@ -350,15 +442,30 @@ exports.userWall = function (req,res) {
 							
 							posts = _.sortBy(posts,'time');
 							posts = posts.reverse();
-							
-							var areFriends = reqUserData;
-							var locals = {
+
+							areFriends(username,reqUser,function(err,result) {
+								if(err) {
+									console.log(err);
+								}
+
+								if(username === reqUser) {
+									var own = true;
+								}
+
+
+								var locals = {
+									title: 'title',
 									user: reqUserData,
 									posts: posts,
-							};
+									areFriends: result,
+									own: own
+
+								};
+
+								res.render('userwall',locals);
+
+							});	
 						}
-						
-						
 					});
 					
 				}
@@ -367,8 +474,40 @@ exports.userWall = function (req,res) {
 			
 		}
 	}
-	
-	
+}
 
+
+exports.makeWallPost = function(req, res) {
+	var username = req.session.username;
+	if(!username) {
+		res.status(401).send("Log in before making a post");
+	} else {
+
+		var post = req.body.post;
+		var to = req.body.to;
+		if(!post || !to) {
+			res.res.status(305);
+		} else {
+
+			var data = {
+				user: username,
+				to: to,
+				post: post,
+				time: Date.now().toString()
+			};
+
+			console.log(data);
+
+			userWall.addToSet(to, JSON.stringify(data), function (err,data) {
+				if(err) {
+					res.send(500);
+				} else {
+					res.status(200).send(JSON.stringify(data));
+
+				}
+			}) 
+		}
+		
+	}
 }
 
